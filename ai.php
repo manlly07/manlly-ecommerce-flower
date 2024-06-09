@@ -259,7 +259,7 @@
 
                 const data = await response.json();
                 console.log(data);
-                $('.product-name').html(data.top)
+                $('.product-name').html(data.data.top)
             } catch (error) {
                 console.error(error);
             }
