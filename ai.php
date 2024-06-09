@@ -172,7 +172,7 @@
                         </div>
                     </div>
                 </div> -->
-                <div>
+                <div class="row">
                     <form action="" id="submit-form">
                         <div class="mb-3">
                             <label for="" class="form-label">Choose file</label>
@@ -188,6 +188,11 @@
                             <button class="btn" type="submit">submit</button>
                         </div>
                     </form>
+                </div>
+                <div class="row">
+                    <div class="product-name">
+
+                    </div>
                 </div>
             </div>
     </main>
@@ -254,6 +259,7 @@
 
                 const data = await response.json();
                 console.log(data);
+                $('.product-name').html(data.top)
             } catch (error) {
                 console.error(error);
             }
