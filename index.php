@@ -456,8 +456,8 @@
       const priceFrom = price.length > 0 ? Math.min(...price) : '';
       const priceTo = price.length > 0 ? Math.max(...price) : '';
       const rate = urlParams.get('rate')?.replace('rate-', '');
-      
-      // var rate = urlParams.get('rate')?.replace('rate-','');
+      const q = urlParams.get('q')
+      console.log(q);
       console.log(categoryParams, branchParams, priceFrom, priceTo, rate);
 
       var requestData = {
@@ -466,6 +466,7 @@
         priceFrom: priceFrom,
         priceTo: priceTo,
         rate: rate,
+        q: q,
         role: 0,
         action: 'readandfilter'
       }
@@ -514,18 +515,10 @@
     }
 
     const getCartById = () => {
-      let userId = localStorage.getItem('userId');
-      $.ajax({
-        url: 'http://localhost:3000/server/cart.php',
-        type: 'POST',
-        data: `action=read&id=${userId}`,
-        success: (response) => {
-          console.log(JSON.parse(response));
-          let carts = JSON.parse(response)
-          $('.total-cart').each(function() {
-            $(this).html(carts.length)
-          })
-        }
+      let cart = localStorage.getItem('cart');
+      cart = cart ? JSON.parse(cart) : [];
+      $('.total-cart').each(function() {
+        $(this).html(cart.length)
       })
     }
 

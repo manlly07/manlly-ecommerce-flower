@@ -669,17 +669,22 @@
       var content = $('#content').val()
       var star = rate;
       var images = selectedImages
-      console.log(content, star, images);
+      var name = $('input[name="review-name"]').val()
+      var phone = $('input[name="review-phone"]').val()
+      console.log(content, star, images, name, phone);
 
       var formData = new FormData();
+      
       formData.append("content", content);
       formData.append("rate", star);
+      formData.append("name", name);
+      formData.append("phone", phone);
+      
       for (var i = 0; i < images.length; i++) {
         var file = images[i];
         formData.append("images[]", file.file);
       }
       formData.append('product_id', productId)
-      formData.append('user_id', 16)
       formData.append('action', 'create')
       $.ajax({
         url: "http://localhost:3000/server/review.php",
@@ -773,9 +778,7 @@
           if (reviews.length > 0) {
             $('.review-list').empty()
             reviews.forEach(function(view) {
-              if(view.user_id === userId) {
-                $('.btn-review').remove()
-              }
+              let bg = ['bg-label-info', 'bg-label-primary', 'bg-label-secondary', 'bg-label-danger', 'bg-label-warning', 'bg-label-success']
               let starHtml = '';
               let imageHtml = '';
               let listImage = view.image.split(';')
@@ -793,10 +796,18 @@
               let html = `
                 <div class="review-item mb-1 d-flex gap-3">
                   <div class="image">
-                    <img src="./server/${view.user_image}" alt="Profile" width="48" class="rounded-circle">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="avatar-wrapper me-2 ">
+                          <div class="avatar avatar-sm">
+                            <div class="w-100 h-100 rounded-circle d-flex align-items-center justify-content-center fs-7 ${bg[view.id]}">
+                              ${view.name.charAt(0) + view.name.charAt(1)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                   </div>
                   <div>
-                    <h6 class="fw-bold mb-0">${view.first_name + ' ' + view.last_name}</h6>
+                    <h6 class="fw-bold mb-0">${view.name}</h6>
                     <div class="star col">
                       ${starHtml}
                     </div>
@@ -827,18 +838,10 @@
     }
 
     const getCartById = () => {
-      let userId = localStorage.getItem('userId');
-      $.ajax({
-        url: 'http://localhost:3000/server/cart.php',
-        type: 'POST',
-        data: `action=read&id=${userId}`,
-        success: (response) => {
-          console.log(JSON.parse(response));
-          let carts = JSON.parse(response)
-          $('.total-cart').each(function() {
-            $(this).html(carts.length)
-          })
-        }
+      let cart = localStorage.getItem('cart');
+      cart = cart ? JSON.parse(cart) : [];
+      $('.total-cart').each(function() {
+        $(this).html(cart.length)
       })
     }
 

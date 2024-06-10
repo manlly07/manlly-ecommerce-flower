@@ -160,7 +160,11 @@
         }
 
         const getCartById = () => {
-            
+            let cart = localStorage.getItem('cart');
+            cart = cart ? JSON.parse(cart) : [];
+            $('.total-cart').each(function() {
+                $(this).html(cart.length)
+            })
         }
         getBlogById(blogId)
         getCartById()

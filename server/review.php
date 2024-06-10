@@ -7,18 +7,41 @@
         if ($_POST['action'] == 'create') {
             $product_id = $_POST['product_id'];
 
-            $serializedObject = $_SESSION['user']; // Lấy chuỗi đối tượng từ phiên
-            $user = unserialize($serializedObject); // Chuyển đổi chuỗi thành đối tượng ban đầu
-            $user_id = $user['id'];
             $rate = $_POST['rate'] ?? 5;
             $images = $_FILES['images'] ?? [];
             $content = $_POST['content'] ?? '';
+            $phone = $_POST['phone'] ?? '';
+            $name = $_POST['name'] ?? '';
             $path  = "";
 
             if(count($images) <= 0) {
                 echo json_encode([
                     'status' => false,
                     'message' => 'Bạn phải gửi ít nhất một hình ảnh đánh giá'
+                ]);
+                exit();
+            }
+
+            $sql = "SELECT * FROM orders o JOIN orderdetail od ON o.id = od.order_id JOIN productskus psk ON od.product_id = psk.id JOIN sputosku stk ON psk.id = stk.sku_id WHERE o.phone = ? AND stk.spu_id = ?";
+            $parameters = [$phone, $product_id];
+            $order = executeQuery($connection, $sql, $parameters, true);
+
+            $sql = "SELECT * FROM reviews WHERE phone = ? AND product_id = ?";
+            $parameters = [$phone, $product_id];
+            $review = executeQuery($connection, $sql, $parameters, true);
+
+            if(!$order) {
+                echo json_encode([
+                    'status' => false,
+                    'message' => 'Bạn chưa mua sản phẩm này'
+                ]);
+                exit();
+            }
+
+            if(count($review) == count($order)) {
+                echo json_encode([
+                    'status' => false,
+                    'message' => 'Bạn đã đánh giá sản phẩm này rồi'
                 ]);
                 exit();
             }
@@ -48,8 +71,8 @@
                 $path .= $upload_path.";";
             }
 
-            $sql = "INSERT INTO reviews (product_id, user_id, rate, image, content) VALUES (?, ?, ?, ?, ?)";
-            $parameters = [$product_id, $user_id, $rate, $path, $content];
+            $sql = "INSERT INTO reviews (product_id, rate, image, content, phone, name) VALUES (?, ?, ?, ?, ?, ?)";
+            $parameters = [$product_id, $rate, $path, $content, $phone, $name];
             $result = executeQuery($connection, $sql, $parameters);   
             if ($result) {
                 echo json_encode([
@@ -82,24 +105,16 @@
         // Lấy đánh giá và phản hồi 
 
         if($_POST['action'] == 'view') {
-            $sql = "SELECT
-                        u.id AS userId,
-                        CONCAT(u.first_name, ' ', u.last_name) AS reviewer_name,
-                        u.image,
-                        u.phone,
-                        r.rate,
-                        r.content,
-                        r.image AS review_images,
-                        r.created_at,
-                        r.id,
-                        r.reply,
-                        (SELECT link FROM images WHERE product_id = p.id LIMIT 1) AS product_image,
-                        p.description,
-                        p.name AS product_name
-                    FROM
-                        reviews r
-                        INNER JOIN products p ON r.product_id = p.id
-                        LEFT JOIN users u ON r.user_id = u.id";
+            $sql = "SELECT ps.name AS product_name,
+             (SELECT i.image FROM productimage i WHERE i.product_id = ps.id LIMIT 1) AS image,
+             ps.description,
+             r.name AS reviewer_name,
+             r.phone,
+             r.rate,
+             r.content,
+             r.created_at,
+             r.id
+             FROM reviews r JOIN productspus ps ON r.product_id = ps.id";
 
             if (isset($_POST['id'])) {
                 $id = $_POST['id'];

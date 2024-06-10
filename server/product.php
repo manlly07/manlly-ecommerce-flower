@@ -214,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $priceTo = isset($_POST['priceTo']) ? $_POST['priceTo'] : '';
         $rate = isset($_POST['rate']) ? $_POST['rate'] : '';
         $role = isset($_POST['role']) ? $_POST['role'] : '';
-
+        $q = isset($_POST['q']) ? $_POST['q'] : '';
         if ($role == 0) {
             $sql = "SELECT
             p.id,
@@ -271,6 +271,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!empty($categories)) {
             $categoryCondition = "c.id IN ('" . implode("','", $categories) . "')";
+            $filterConditions[] = $categoryCondition;
+        }
+
+        if (!empty($q)) {
+            $categoryCondition = "p.name LIKE '%$q%' ";
             $filterConditions[] = $categoryCondition;
         }
         

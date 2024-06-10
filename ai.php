@@ -115,83 +115,31 @@
 
     <main class="main bg-white" style="min-height: 100vh;">
         <div class="section container-2xxl">
-            <div class="section my-4">
-                <div class="row py-4 mb-4 text-center">
-                    <h3 class="fw-bold">Blog</h3>
-                </div>
-                <!-- <div class="row justify-content-around " id="blog-list">
-                    <div class="col-md-3 shadow-lg p-3 mb-5 bg-body rounded">
-                        <div class="post-entry">
-                            <div class="media mb-1">
-                                <a href="inner-page.html"><img src="https://www.hostinger.co.id/tutorial/wp-content/uploads/sites/11/2017/12/Cara-membuat-blog-pribadi.png" alt="Image" class="img-fluid"></a>
-                            </div>
-                            <div class="text">
-                                <div class="mb-1"><a href="#" style="color: #c1a57b;">Food and Drink</a></div>
-                                <h2 class="fs-4 text-black"><a href="inner-page.html" style="color: black;">Far far away behind the Word Mountains far from Away</a></h2>
-                                <div class="meta fs-6 mb-1" style="color: rgba(152, 152, 152, 0.7);">
-                                    <span>May 10, 2020</span>
-                                    <span>•</span>
-                                    <span>5 mins read</span>
-                                </div>
-                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                            </div>
-                        </div>
+            <div class="d-flex align-items-center justify-content-center">
+                <div class="shadow-lg p-3 mb-5 bg-body rounded" style="width: 580px; margin-top: 100px;">
+                    <div class="row py-4 mb-4 text-center">
+                        <h3 class="fw-bold">Tìm kiếm sản phẩm với AI</h3>
                     </div>
-                    <div class="col-md-3 shadow-lg p-3 mb-5 bg-body rounded">
-                        <div class="post-entry">
-                            <div class="media mb-1">
-                                <a href="inner-page.html"><img src="https://www.hostinger.co.id/tutorial/wp-content/uploads/sites/11/2017/12/Cara-membuat-blog-pribadi.png" alt="Image" class="img-fluid"></a>
+                    <div class="row">
+                        <form action="" id="submit-form">
+                            <div class="mb-3">
+                                <input
+                                    type="file"
+                                    class="form-control"
+                                    name=""
+                                    id="imageInput"
+                                    placeholder=""
+                                />
                             </div>
-                            <div class="text">
-                                <div class="mb-1"><a href="#" style="color: #c1a57b;">Food and Drink</a></div>
-                                <h2 class="fs-4 text-black"><a href="inner-page.html" style="color: black;">Far far away behind the Word Mountains far from Away</a></h2>
-                                <div class="meta fs-6 mb-1" style="color: rgba(152, 152, 152, 0.7);">
-                                    <span>May 10, 2020</span>
-                                    <span>•</span>
-                                    <span>5 mins read</span>
-                                </div>
-                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
+                            <div class="d-grid gap-2 col-12 mx-auto">
+                                <button class="btn btn-primary" type="submit">Tìm kiếm</button>
                             </div>
-                        </div>
+                        </form>
                     </div>
-                    <div class="col-md-3 shadow-lg p-3 mb-5 bg-body rounded">
-                        <div class="post-entry">
-                            <div class="media mb-1">
-                                <a href="inner-page.html"><img src="https://www.hostinger.co.id/tutorial/wp-content/uploads/sites/11/2017/12/Cara-membuat-blog-pribadi.png" alt="Image" class="img-fluid"></a>
-                            </div>
-                            <div class="text">
-                                <div class="mb-1"><a href="#" style="color: #c1a57b;">Food and Drink</a></div>
-                                <h2 class="fs-4 text-black"><a href="inner-page.html" style="color: black;">Far far away behind the Word Mountains far from Away</a></h2>
-                                <div class="meta fs-6 mb-1" style="color: rgba(152, 152, 152, 0.7);">
-                                    <span>May 10, 2020</span>
-                                    <span>•</span>
-                                    <span>5 mins read</span>
-                                </div>
-                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                            </div>
+                    <div class="row">
+                        <div class="product-name">
+    
                         </div>
-                    </div>
-                </div> -->
-                <div class="row">
-                    <form action="" id="submit-form">
-                        <div class="mb-3">
-                            <label for="" class="form-label">Choose file</label>
-                            <input
-                                type="file"
-                                class="form-control"
-                                name=""
-                                id="imageInput"
-                                placeholder=""
-                            />
-                        </div>
-                        <div>
-                            <button class="btn" type="submit">submit</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="row">
-                    <div class="product-name">
-
                     </div>
                 </div>
             </div>
@@ -249,23 +197,32 @@
         $('#submit-form').on('submit', async function (e){
             e.preventDefault();
             let formData = new FormData();
-            formData.append('image', $('input[type=file]')[0].files[0]);
+            if(!$('input[type=file]')[0].files[0]) {
+                return
+            }
             console.log($('input[type=file]')[0].files[0])
+            formData.append('image', $('input[type=file]')[0].files[0]);
             try {
                 const response = await fetch('http://localhost:8080/ai', {
                 method: 'POST',
                 body: formData,
                 });
 
-                const data = await response.json();
-                $('.product-name').html(data.data.top)
+                const { data } = await response.json();
+                console.log(data);
+                window.location.href = `index.php?q=${data.top}`
+                $('.product-name').html(data)
             } catch (error) {
                 console.error(error);
             }
         });
 
         const getCartById = () => {
-            
+            let cart = localStorage.getItem('cart');
+            cart = cart ? JSON.parse(cart) : [];
+            $('.total-cart').each(function() {
+                $(this).html(cart.length)
+            })
         }
         showBlogs()
         getCartById()

@@ -37,7 +37,7 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="container-2xxl d-flex align-items-center">
       <div class="d-flex align-items-center justify-content-between">
-        <a href="index.html" class="logo d-flex align-items-center">
+        <a href="index.php" class="logo d-flex align-items-center">
           <img src="assets/img/logo.png" alt="" />
           <span class="d-none d-lg-block">Floda</span>
         </a>
@@ -339,6 +339,9 @@
       const getCartById = () => {
         let cart = JSON.parse(localStorage.getItem('cart')) ?? [];
         console.log(cart);
+        $('.total-cart').each(function() {
+          $(this).html(cart.length)
+        })
         $('#table-cart').empty()
         $.ajax({
           url: 'http://localhost:3000/server/product.php',

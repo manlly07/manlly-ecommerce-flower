@@ -645,7 +645,7 @@
                         <div class="d-flex justify-content-start align-items-center customer-name">
                           <div class="avatar-wrapper">
                             <div class="avatar me-3 rounded-2 bg-label-secondary">
-                              <img src="./server/${row.product_image}" alt="Product-15" class="rounded-2">
+                              <img src="./server/${row.image}" alt="Product-15" class="rounded-2">
                             </div>
                           </div>
                           <div class="d-flex flex-column">
@@ -659,15 +659,19 @@
               {
                 data: null,
                 render: function(data, type, row) {
+                  let bg = ['bg-label-info', 'bg-label-primary', 'bg-label-secondary', 'bg-label-danger', 'bg-label-warning', 'bg-label-success']
+                  let index = row.id % bg.length
                   return `
                         <div class="d-flex justify-content-start align-items-center customer-name" style="padding-right: 24px; margin: auto;">
-                          <div class="avatar-wrapper me-3">
+                          <div class="avatar-wrapper me-2 ">
                             <div class="avatar avatar-sm">
-                              <img src="./server/${row.image}" alt="Avatar" class="rounded-circle">
+                              <div class="w-100 h-100 rounded-circle d-flex align-items-center justify-content-center fs-7 ${bg[index]}">
+                                ${row.reviewer_name.charAt(0)}
+                              </div>
                             </div>
                           </div>
                           <div class="d-flex flex-column">
-                            <a href="customer-detail.php?id=${row.user_id}">
+                            <a href="#">
                               <span class="fw-medium">${row.reviewer_name}</span>
                             </a>
                             <small class="text-nowrap fs-8 text-secondary">${row.phone}</small>
@@ -732,7 +736,7 @@
             const review = JSON.parse(response)[0]
             console.log(review);
             $('.product-name').html(review.product_name)
-            $('.product-image').attr('src', `./server/${review.product_image}`)
+            $('.product-image').attr('src', `./server/${review.image}`)
             $('.prodcut-description').html(review.description)
             $('.user-image').attr('src', `./server/${review.image}`)
             $('.user-name').html(review.reviewer_name)
