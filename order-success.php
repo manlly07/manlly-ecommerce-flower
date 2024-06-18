@@ -77,6 +77,12 @@
 
           </li>
 
+          <li class="nav-item d-block">
+              <a class="nav-link nav-icon search-bar-toggle" href="#">
+                <a class="btn btn-primary ms-3" href="pages-login.php">Đăng nhập</a>
+              </a>
+            </li>
+
         </ul>
       </nav>
       </div>

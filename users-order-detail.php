@@ -548,7 +548,8 @@
           } = JSON.parse(response)
           if (status) {
             showAlert('success', message)
-            showOrderDetail()
+            //showOrderDetail()
+            $('.btn-update').remove()
           } else {
             showAlert('danger', message)
           }

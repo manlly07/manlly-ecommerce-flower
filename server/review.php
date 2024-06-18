@@ -113,7 +113,8 @@
              r.rate,
              r.content,
              r.created_at,
-             r.id
+             r.id,
+             r.reply
              FROM reviews r JOIN productspus ps ON r.product_id = ps.id";
 
             if (isset($_POST['id'])) {

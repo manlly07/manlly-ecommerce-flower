@@ -55,21 +55,6 @@
             </a>
           </li>
 
-
-          <li class="nav-item dropdown">
-            <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-              <i class="bi bi-cart"></i>
-              <span class="badge bg-primary badge-number total-cart">4</span> </a>
-
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-              <li class="dropdown-header">
-                Bạn có <span class="total-cart">4</span> sản phẩm trong giỏ hàng
-                <a href="./cart.php"><span class="badge rounded-pill bg-primary p-2 ms-2">xem tất cả</span></a>
-              </li>
-            </ul>
-
-          </li>
-
           <li class="nav-item dropdown pe-3">
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
               <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle profile-image" />

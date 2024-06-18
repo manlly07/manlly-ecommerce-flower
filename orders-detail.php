@@ -62,21 +62,6 @@
             </a>
           </li>
 
-
-          <li class="nav-item dropdown">
-            <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-              <i class="bi bi-cart"></i>
-              <span class="badge bg-primary badge-number total-cart">4</span> </a>
-
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-              <li class="dropdown-header">
-                Bạn có <span class="total-cart">4</span> sản phẩm trong giỏ hàng
-                <a href="./cart.php"><span class="badge rounded-pill bg-primary p-2 ms-2">xem tất cả</span></a>
-              </li>
-            </ul>
-
-          </li>
-
           <li class="nav-item dropdown pe-3">
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
               <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle profile-image" />
@@ -226,7 +211,11 @@
                     <button class="btn btn-outline-danger fw-medium dropdown-toggle btn-update" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                       Cập nhật trạng thái
                       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" id="handleUpdate"  href="#">Hủy đơn hàng</a></li>
+                          <li><a class="dropdown-item" onclick="handleUpdateStatus('processing')" href="#">Đang xử lý</a></li>
+                        <li><a class="dropdown-item" onclick="handleUpdateStatus('pending')" href="#">Đang chờ gửi đơn</a></li>
+                        <li><a class="dropdown-item" onclick="handleUpdateStatus('shipped')" href="#">Đang gửi</a></li>
+                        <li><a class="dropdown-item" onclick="handleUpdateStatus('delivered')" href="#">Đã giao hàng</a></li>
+                        <li><a class="dropdown-item" onclick="handleUpdateStatus('cancelled')" href="#">Hủy đơn hàng</a></li>
                       </ul>
                     </button>
                   </div>
@@ -383,7 +372,9 @@
           let html ="";
           console.log(data.details);
           $('.tableProduct').empty();
+          let total = 0
           data.details.forEach(function(item,index) {
+            total += item.price * item.quantity
             html += `<tr>
                             <th scope="row">${index + 1}</th>
                             <td colspan="2">
@@ -404,7 +395,7 @@
           $('.province').html(`Thành Phố: ${data.province}`)
           $('.district').html(`Quận: ${data.district}`)
           $('.address').html(`Địa chỉ: ${data.address}`);
-          $('.total').html(convertToCurrency(data.total));
+          $('.total').html(convertToCurrency(total));
         }
       });
     }

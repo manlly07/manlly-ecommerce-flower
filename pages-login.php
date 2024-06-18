@@ -58,11 +58,11 @@
                   <form method="post" class="row g-3 needs-validation" id="formLogin" novalidate>
 
                     <div class="col-12">
-                      <label for="yourPhone" class="form-label">Số điện thoại</label>
+                      <label for="yourUsername" class="form-label">Số điện thoại</label>
                       <div class="input-group has-validation">
                         <span class="input-group-text" id="inputGroupPrepend">@</span>
-                        <input type="text" name="phone" class="form-control" id="yourPhone" required>
-                        <div class="invalid-feedback">Nhập đúng định dạng số điện thoại.</div>
+                        <input type="text" name="username" class="form-control" id="yourUsername" required>
+                        <div class="invalid-feedback">Nhập đúng user name.</div>
                       </div>
                     </div>
 
@@ -75,9 +75,9 @@
                     <div class="col-12">
                       <button class="btn btn-primary w-100" type="submit">Đăng nhập</button>
                     </div>
-                    <div class="col-12">
+                    <!-- <div class="col-12">
                       <p class="small mb-0">Bạn chưa có tài khoản? <a href="pages-register.php">Tạo một tài khoản</a></p>
-                    </div>
+                    </div> -->
                   </form>
 
                 </div>
@@ -128,11 +128,7 @@
           console.log(JSON.parse(response));
           let data = JSON.parse(response) // chuyển từ dạng chuỗi sang kí tự, mảng
           if (data.status) {
-            if(!data.phone) {
-              window.location.href = `./verify-phone.php?id=${data.id}`
-            }else {
-              window.location.href = `./index.php`
-            }
+            window.location.href = `./dashboard.php`
           }else {
             alert(data.message)
           }

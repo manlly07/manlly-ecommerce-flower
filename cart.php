@@ -30,7 +30,7 @@
 
     <link href="assets/css/style.css" rel="stylesheet" />
 
-    <title>Home</title>
+    <title>Giỏ hàng</title>
   </head>
 
   <body>
@@ -56,15 +56,15 @@
       <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center gap-4 ">
           <li class="nav-item d-block">
-            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#">
+            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="ai.php">
               <span class="d-none d-md-block ps-2 text-truncate">
-                HOME
+                AI
               </span>
             </a>
           </li>
 
           <li class="nav-item d-block">
-            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#">
+            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="index.php">
               <span class="d-none d-md-block ps-2 text-truncate">
                 SHOP
               </span>
@@ -72,17 +72,9 @@
           </li>
 
           <li class="nav-item d-block">
-            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#">
+            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="blog.php">
               <span class="d-none d-md-block ps-2 text-truncate">
                 BLOG
-              </span>
-            </a>
-          </li>
-
-          <li class="nav-item d-block">
-            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#">
-              <span class="d-none d-md-block ps-2 text-truncate">
-                CONTACT US
               </span>
             </a>
           </li>
@@ -112,6 +104,12 @@
             </ul>
 
           </li>
+
+          <li class="nav-item d-block">
+              <a class="nav-link nav-icon search-bar-toggle" href="#">
+                <a class="btn btn-primary ms-3" href="pages-login.php">Đăng nhập</a>
+              </a>
+            </li>
 
         </ul>
       </nav>

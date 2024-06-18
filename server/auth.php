@@ -1,92 +1,30 @@
 <?php 
     include './database.php';
-    include './send.php';
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // Thêm đăng ký tài khoản
-        if ($_POST['action'] == 'register') {
-            $first_name = $_POST['firstname'];
-            $last_name = $_POST['lastname'];
-            $phone = $_POST['phone'];
-            $password = $_POST['password'];
-            $confirmPassword = $_POST['confirmPassword'];
-            $address = $_POST['address'];
-            $image = '';
-            // Kiểm tra mật khẩu và xác nhận mật khẩu
-            if ($password !== $confirmPassword) {
-                echo json_encode([
-                    'status' => false,
-                    'message' => 'Mật khẩu không khớp'
-                ]);
-                exit;
-            }
-
-            $sql = "SELECT * FROM users WHERE phone = ?";
-            $parameters = [$phone];
-
-            $result = executeQuery($connection, $sql, $parameters, true);
-
-            if (count($result) != 0) {
-                echo json_encode([
-                    'status' => false,
-                    'message' => 'Tài khoản đã tồn tại',
-                ]);
-                exit;
-            }
-    
-            $sql = "INSERT INTO users (first_name, last_name, phone, image, phone_verify, password, address) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            $parameters = [$first_name, $last_name, $phone, $image, false, $password, $address];
-            $result = executeQuery($connection, $sql, $parameters, false, true);
-            if ($result) {
-                $phone = '84' . ltrim($phone, '0');
-                sendOtp($connection, $result, $phone);
-                echo json_encode([
-                    'status' => true,
-                    'message' => 'Đăng kí thành công',
-                    'id' => $result
-                ]);
-            } else {
-                echo json_encode([
-                    'status' => false,
-                    'message' => 'Đăng ký không thành công! Kiểm tra lại thông tin của bạn'
-                ]);
-            }
-        }
 
         if ($_POST['action'] == 'login') {
-            $phone = $_POST['phone'];
+            $username = $_POST['username'];
             $password = $_POST['password'];
 
             // Kiểm tra mật khẩu và xác nhận mật khẩu
-            $sql = "SELECT * FROM users WHERE phone = ? AND password = ?";
-            $parameters = [$phone, $password];
+            $sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            $parameters = [$username, $password];
             $result = executeQuery($connection, $sql, $parameters, true);
             if (count($result) == 0) {
                 echo json_encode([
                     'status' => false,
-                    'message' => 'Sai số điện thoại hoặc mật khẩu',
+                    'message' => 'Sai user name hoặc mật khẩu',
                     'phone' => false
                 ]);
             } else {
-                $verify = $result[0]['phone_verify'];
-                if ($verify == 0) {
-                    echo json_encode([
-                        'status' => true,
-                        'message' => 'Đăng nhập thành công! Vui lòng xác thực số điện thoại!',
-                        'phone' => false,
-                        'id' => $result[0]['id']
-                    ]);
-                }else {
-                    //Lưu đối tượng dưới dạng chuỗi vào phiên
-                    $_SESSION['user'] = serialize($result[0]);
-                    echo json_encode([
-                        'status' => true,
-                        'message' => 'Đăng nhập thành công!',
-                        'phone' => true,
-                        'id' => $result[0]['id']
-                    ]);
-                }
+                //Lưu đối tượng dưới dạng chuỗi vào phiên
+                $_SESSION['user'] = serialize($result[0]);
+                echo json_encode([
+                    'status' => true,
+                    'message' => 'Đăng nhập thành công!',
+                ]);
             }
         }
 
@@ -129,6 +67,7 @@
                 $serializedObject = $_SESSION['user']; // Lấy chuỗi đối tượng từ phiên
                 $user = unserialize($serializedObject); // Chuyển đổi chuỗi thành đối tượng ban đầu
                 unset($user['password']);
+                $user['role'] = 'admin';
                 echo json_encode([
                     'status' => true,
                     'message' => 'Đã đăng nhập',

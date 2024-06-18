@@ -80,21 +80,6 @@
             </a>
           </li>
 
-
-          <li class="nav-item dropdown">
-            <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-              <i class="bi bi-cart"></i>
-              <span class="badge bg-primary badge-number total-cart">4</span> </a>
-
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-              <li class="dropdown-header">
-                Bạn có <span class="total-cart">4</span> sản phẩm trong giỏ hàng
-                <a href="./cart.php"><span class="badge rounded-pill bg-primary p-2 ms-2">xem tất cả</span></a>
-              </li>
-            </ul>
-
-          </li>
-
           <li class="nav-item dropdown pe-3">
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
               <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle profile-image" />
@@ -753,9 +738,9 @@
             $('.review-image').empty()
 
 
-            let images = review.review_images.split(';')
-            images.pop()
-            images.forEach(function(image) {
+            let images = review?.review_images?.split(';')
+            images?.pop()
+            images?.forEach(function(image) {
               $('.review-image').append(`<img src="./server/${image}" alt="" class="p-1" style="width: 84px; height: 84px;">`)
             })
             $('.review-date').html(review.created_at)
@@ -767,6 +752,7 @@
       $('.handleReply').on('click', function() {
         var id = $('.review-id').val()
         var reply = $('.review-reply').val()
+        console.log(id, reply);
         $.ajax({
           url: "http://localhost:3000/server/review.php",
           type: "POST",

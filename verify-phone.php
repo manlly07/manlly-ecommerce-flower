@@ -129,7 +129,12 @@
             signInWithPhoneNumber
         } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js'
         // import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js'
-
+        const convertPhoneNumber = (phoneNumber) => {
+            if (phoneNumber.startsWith('0')) {
+                return '+84' + phoneNumber.slice(1);
+            }
+            return phoneNumber;
+        }
         const firebaseConfig = {
             apiKey: "AIzaSyBCfTlrzaicTBPtgWmliILfmivM8YV0uXc",
             authDomain: "manlly.firebaseapp.com",
@@ -145,8 +150,10 @@
         for (const [key, value] of urlParams) {
             jsonData[key] = value;
         }
-        const jsonString = JSON.stringify(jsonData);
-        console.log(jsonString);
+        let phone = convertPhoneNumber(jsonData['phone']);
+        let totalBill = jsonData['totalBill'];
+        // const jsonString = JSON.stringify(jsonData);
+        // console.log(jsonString);
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
@@ -171,13 +178,13 @@
             }
         }
 
-        const onSignUp = () => {
+        const onSignUp = (phone) => {
             debugger
             onCaptchVerify()
 
             const appVerify = window.recaptchaVerifier
             console.log(appVerify);
-            signInWithPhoneNumber(auth, '+84368366282', appVerify)
+            signInWithPhoneNumber(auth, phone, appVerify)
                 .then((confirmationResult) => {
                     // SMS sent. Prompt user to type the code from the message, then sign the
                     // user in with confirmationResult.confirm(code).
@@ -205,7 +212,53 @@
                 }
             });
         }
+        let carts = [];
+        const getCartById = () => {
+            let cart = JSON.parse(localStorage.getItem('cart')) ?? [];
+            console.log(cart);
+            cart = cart ? cart : [];
+            $.ajax({
+                url: 'http://localhost:3000/server/product.php',
+                type: 'POST',
+                data: `action=getcartbyid&carts=${JSON.stringify(cart)}`,
+                success: (response) => {
+                    console.log(JSON.parse(response));
+                    carts = JSON.parse(response)
+                }
+            })
+        }
+        const getDate = () => {
+            var currentDate = new Date();
 
+            var day = currentDate.getDate();
+            var month = currentDate.getMonth() + 1;
+            var year = currentDate.getFullYear();
+
+            var currentTime = day + '/' + month + '/' + year;
+            return currentTime
+        }
+
+        const handleOrder = async (dataJson) => {
+            console.log(dataJson);
+            let payload = Object.entries(dataJson)
+                .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+                .join('&');
+            $.ajax({
+                url: 'http://localhost:3000/server/order.php',
+                type: 'POST',
+                data: `${payload}&carts=${JSON.stringify(carts)}&action=create`,
+                success: (response) => {
+                    console.log(JSON.parse(response));
+                    let data = JSON.parse(response)
+                    if (data.status) {
+                        localStorage.removeItem('cart')
+                        window.location.href = `./order-success.php?order_id=${data.order}&date=${getDate()}&total=${totalBill}&method=${$('input[name="payment-method"]:checked').val()}`
+                    } else {
+                        showAlert('danger', data.message)
+                    }
+                }
+            })
+        }
 
         const onVerifyCaptcha = () => {
             let code = $('input[name="otp"]').val()
@@ -215,23 +268,7 @@
                 console.log("signed in successfully", result);
                 const user = result.user;
                 // ...
-                jsonData['action'] = 'create'
-
-                $.ajax({
-                    url: 'http://localhost:3000/server/order.php',
-                    type: 'POST',
-                    data: jsonData,
-                    success: (response) => {
-                        console.log(JSON.parse(response));
-                        let data = JSON.parse(response)
-                        if (data.status) {
-                            // window.location.href = `./order-success.php?order_id=${data.order}&date=${getDate()}&total=${total}&method=${shipping_method}`
-                        } else {
-                            showAlert('danger', data.message)
-                        }
-                    }
-                })
-
+                // handleOrder(JSON.stringify(jsonData))
 
 
             }).catch((error) => {
@@ -243,16 +280,16 @@
             });
         }
 
-        $('#resend').on('click', () => onSignUp())
-        onSignUp()
+        $('#resend').on('click', () => onSignUp(phone))
+        // onSignUp(phone)
         //   $('.verify-now').on('click', () => onVerifyCaptcha())
         $('#twoStepsForm').on('submit', (e) => {
             e.preventDefault()
-            onVerifyCaptcha()
+            handleOrder(jsonData)
+            // onVerifyCaptcha()
         })
+        getCartById()
     </script>
-
-
     <script>
         //var urlParams = new URLSearchParams(window.location.search);
         // var userId = urlParams.get('id');

@@ -432,10 +432,10 @@
             let htmls = `
                       <tr>
                         <th scope="row"><a href="#"><img src="./server/${product.image}" alt=""></a></th>
-                        <td><a href="#" class="text-primary fw-bold">${product.name}</a></td>
-                        <td>${convertToCurrency(product.price)}</td>
-                        <td class="fw-bold">${product.total_quantity}</td>
-                        <td>${convertToCurrency(product.price * product.total_quantity)}</td>
+                        <td><a href="#" class="text-primary fw-bold">${product.product_name}</a></td>
+                        <td>${convertToCurrency(product.product_price)}</td>
+                        <td class="fw-bold">${product.total_quantity_sold}</td>
+                        <td>${convertToCurrency(product.product_price * product.total_quantity_sold)}</td>
                       </tr>
             `
             $('.tbody').append(htmls)
