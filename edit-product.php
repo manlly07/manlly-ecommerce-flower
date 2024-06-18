@@ -169,6 +169,24 @@
         </a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#blog-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-menu-button-wide"></i><span>Blog</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="blog-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="blog-list.php">
+              <i class="bi bi-circle"></i><span>Danh sách blog</span>
+            </a>
+          </li>
+          <li>
+            <a href="add-blog.php">
+              <i class="bi bi-circle"></i><span>Thêm blog</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
     </ul>
   </aside>
 
