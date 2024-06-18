@@ -212,9 +212,9 @@
                 <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#about-product">Giới thiệu sản phẩm</button>
               </li>
     
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#details">Chi tiết sản phẩm</button>
-              </li>
+              </li> -->
     
             </ul>
             <div class="tab-content mt-4 mb-4">
@@ -226,7 +226,7 @@
                     </p>
                   </div>
               </div>
-              <div class="tab-pane fade details" id="details">
+              <!-- <div class="tab-pane fade details" id="details">
                   <table class="table table-striped table-bordered" width="300">
                     <tbody>
                     <tr>
@@ -277,7 +277,7 @@
                     </tr>
                     </tbody>
                     </table>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -820,7 +820,7 @@
                 ${view.reply != "" ? 
                   `
                   <div class="mb-3 p-2" style="background: #eee; width: 600px; margin-left:52px;">
-                  <span class="fw-bold">Cửa hàng Thảo Hiền</span>
+                  <span class="fw-bold">Cửa hàng hoa floda</span>
                   <p>${view.reply}</p>
                   </div>
                   `

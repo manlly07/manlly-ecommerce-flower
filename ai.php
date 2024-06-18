@@ -121,13 +121,7 @@
                     <div class="row">
                         <form action="" id="submit-form">
                             <div class="mb-3">
-                                <input
-                                    type="file"
-                                    class="form-control"
-                                    name=""
-                                    id="imageInput"
-                                    placeholder=""
-                                />
+                                <input type="file" class="form-control" name="" id="imageInput" placeholder="" />
                             </div>
                             <div class="d-grid gap-2 col-12 mx-auto">
                                 <button class="btn btn-primary" type="submit">Tìm kiếm</button>
@@ -136,7 +130,7 @@
                     </div>
                     <div class="row">
                         <div class="product-name">
-    
+
                         </div>
                     </div>
                 </div>
@@ -156,7 +150,7 @@
     <script src="assets/js/main.js"></script>
 
     <script src="./assets/js/auth.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
     <script>
         const showBlogs = () => {
             $.ajax({
@@ -192,27 +186,86 @@
             })
         }
 
-        $('#submit-form').on('submit', async function (e){
-            e.preventDefault();
-            let formData = new FormData();
-            if(!$('input[type=file]')[0].files[0]) {
-                return
-            }
-            console.log($('input[type=file]')[0].files[0])
-            formData.append('image', $('input[type=file]')[0].files[0]);
-            try {
-                const response = await fetch('http://localhost:8080/ai', {
-                method: 'POST',
-                body: formData,
-                });
+        function translateToVietnamese(flowerName) {
+            const translationDict = {
+                'Rose': 'Hoa Hồng',
+                'nagapoovu': 'Hoa Nagapoovu',
+                'thechi': 'Hoa Thechi',
+                'spider lily': 'Hoa Bách Hợp Nhện',
+                'malabar melastome': 'Hoa Mã Đề Malabar',
+                'champaka': 'Hoa Ngọc Lan',
+                'Yellow_Daisy': 'Hoa Cúc Vàng',
+                'Datura': 'Hoa Datura',
+                'sunflower': 'Hoa Hướng Dương',
+                'Jatropha': 'Hoa Cô Ca',
+                'pinwheel flower': 'Hoa Chong Chóng',
+                'crown flower': 'Hoa Vương Miện',
+                'Nityakalyani': 'Hoa Nityakalyani',
+                'banana': 'Cây Chuối',
+                'thumba': 'Hoa Thumba',
+                'wild_potato_vine': 'Hoa Khoai Dại',
+                'shankupushpam': 'Hoa Shankupushpam',
+                'Common Lanthana': 'Hoa Ngũ Sắc Thường',
+                'adathoda': 'Hoa Adathoda',
+                'Bush Clock Vine': 'Hoa Dây Leo',
+                'chitrak': 'Hoa Chitrak',
+                'indian mallow': 'Hoa Cẩm Quỳ Ấn Độ',
+                "four o'clock flower": 'Hoa Bốn Giờ',
+                'Marigold': 'Hoa Vạn Thọ',
+                'honeysuckle': 'Hoa Kim Ngân',
+                'Hibiscus': 'Hoa Dâm Bụt',
+                'tridax procumbens': 'Hoa Tridax Procumbens',
+                'touch me not': 'Hoa Trinh Nữ'
+            };
 
-                const { data } = await response.json();
-                console.log(data);
-                window.location.href = `index.php?q=${data.top}`
-                $('.product-name').html(data)
-            } catch (error) {
-                console.error(error);
+            return translationDict[flowerName] || 'Không tìm thấy hoa nào';
+        }
+
+        function uploadFile() {
+            const fileInput = document.getElementById('imageInput');
+            console.log(1);
+            const file = fileInput.files[0];
+            console.log(file);
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onloadend = function() {
+                    const base64String = reader.result.replace("data:", "").replace(/^.+,/, "");
+
+                    axios({
+                            method: "POST",
+                            url: "https://classify.roboflow.com/227-yc1vm/1",
+                            params: {
+                                api_key: "Ai5rEJqLo8fp6roMw0Jp"
+                            },
+                            data: base64String,
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            }
+                        })
+                        .then(function(response) {
+                            // $('#spinnerContainer').addClass('d-none');
+                            const result = response.data.predictions[0].class;
+                            console.log(result);
+                            let resultTranslate = translateToVietnamese(result);
+                            console.log(resultTranslate);
+                            window.location.href = 'index.php?q=' + resultTranslate
+                        })
+                        .catch(function(error) {
+                            console.log(error.message);
+                        });
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                console.log("No file selected");
             }
+        }
+
+
+        $('#submit-form').on('submit', async function(e) {
+            e.preventDefault();
+            uploadFile()
         });
 
         const getCartById = () => {
