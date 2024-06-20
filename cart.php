@@ -106,6 +106,12 @@
           </li>
 
           <li class="nav-item d-block">
+              <a class="nav-link nav-icon" href="users-order-detail.php">
+                  <i class="bi bi-bag-check"></i>
+              </a>
+          </li>
+
+          <li class="nav-item d-block">
               <a class="nav-link nav-icon search-bar-toggle" href="#">
                 <a class="btn btn-primary ms-3" href="pages-login.php">Đăng nhập</a>
               </a>
@@ -400,6 +406,7 @@
         let carts = JSON.parse(localStorage.getItem('cart')) ?? []
         carts.splice(index, 1);
         localStorage.setItem('cart', JSON.stringify(carts));
+        window.location.reload();
       }
 
       const calculateTotal = (input, index) => {

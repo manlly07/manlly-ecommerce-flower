@@ -61,17 +61,18 @@ const checkAuth = () => {
 }
 
 const showAlert = (type, message) => {
-    console.log("alert");
-    let alertElment = `  <div class="position-absolute" id="box-alert" style="z-index: 100000000; top:80px; right: 10px">
-                            <div class="alert alert-${type}" role="alert">
-                                ${message}
-                            </div>
-                        </div>`
-    $('body #box-alert').remove()
-    $('body').append(alertElment)
-    $(".alert").fadeTo(2000, 500).slideUp(500, function() {
-      $(".alert").slideUp(500);
-    });
+    // console.log("alert");
+    // let alertElment = `  <div class="position-absolute" id="box-alert" style="z-index: 100000000; top:80px; right: 10px">
+    //                         <div class="alert alert-${type}" role="alert">
+    //                             ${message}
+    //                         </div>
+    //                     </div>`
+    // $('body #box-alert').remove()
+    // $('body').append(alertElment)
+    // $(".alert").fadeTo(2000, 500).slideUp(500, function() {
+    //   $(".alert").slideUp(500);
+    // });
+    alert(message)
 }
 const convertToCurrency = (number) => {
     var formatter = new Intl.NumberFormat('vi-VN', {

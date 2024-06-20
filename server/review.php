@@ -22,7 +22,7 @@
                 exit();
             }
 
-            $sql = "SELECT * FROM orders o JOIN orderdetail od ON o.id = od.order_id JOIN productskus psk ON od.product_id = psk.id JOIN sputosku stk ON psk.id = stk.sku_id WHERE o.phone = ? AND stk.spu_id = ?";
+            $sql = "SELECT * FROM orders o JOIN orderdetail od ON o.id = od.order_id JOIN sputosku stk ON stk.id = od.product_id WHERE o.phone = ? AND stk.spu_id = ?";
             $parameters = [$phone, $product_id];
             $order = executeQuery($connection, $sql, $parameters, true);
 
@@ -37,7 +37,7 @@
                 ]);
                 exit();
             }
-
+            
             if(count($review) == count($order)) {
                 echo json_encode([
                     'status' => false,

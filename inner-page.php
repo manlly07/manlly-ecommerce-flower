@@ -100,6 +100,11 @@
 
                     </li>
 
+                    <li class="nav-item d-block">
+                        <a class="nav-link nav-icon" href="users-order-detail.php">
+                            <i class="bi bi-bag-check"></i>
+                        </a>
+                    </li>
 
                     <li class="nav-item d-block">
               <a class="nav-link nav-icon search-bar-toggle" href="#">

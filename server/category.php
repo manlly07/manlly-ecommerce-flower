@@ -68,21 +68,46 @@
 
         if ($_POST['action'] == 'delete') {
             $category_id = $_POST['id'];
-
-            $sql = "DELETE FROM ProductCategory WHERE id = ?";
             $parameters = [$category_id];
-    
-            $result = executeQuery($connection, $sql, $parameters);
-            if ($result) {
-                echo json_encode([
-                    'status' => true,
-                    'message' => 'Successfully'
-                ]);
-            } else {
+            $sql = "SELECT * FROM ProductCategory WHERE id = $category_id";
+            $result = executeQuery($connection, $sql, [], true);
+            if (!$result) {
                 echo json_encode([
                     'status' => false,
-                    'message' => 'Something went wrong'
+                    'message' => 'Không tìm thấy category'
                 ]);
+                return;
+            }
+            if ($result[0]['is_deleted'] == 0) {
+                $sql = "UPDATE ProductCategory SET is_deleted = 1 WHERE id = ?";
+                $bool = executeQuery($connection, $sql, $parameters);
+                if ($bool) {
+                    echo json_encode([
+                        'status' => true,
+                        'message' => 'Xóa thành công category'
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => false,
+                        'message' => 'Có lỗi khi xóa'
+                    ]);
+                }
+            }
+
+            if ($result[0]['is_deleted'] == 1) {
+                $sql = "UPDATE ProductCategory SET is_deleted = 0 WHERE id = ?";
+                $bool = executeQuery($connection, $sql, $parameters);
+                if ($bool) {
+                    echo json_encode([
+                        'status' => true,
+                        'message' => 'Cập nhật thành công category'
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => false,
+                        'message' => 'Có lỗi khi Cập nhật'
+                    ]);
+                }
             }
         }
     }

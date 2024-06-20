@@ -215,12 +215,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $rate = isset($_POST['rate']) ? $_POST['rate'] : '';
         $role = isset($_POST['role']) ? $_POST['role'] : '';
         $q = isset($_POST['q']) ? $_POST['q'] : '';
-        if ($role == 0) {
-            $sql = "SELECT
+    
+        // Base SQL query
+        $sql = "SELECT
             p.id,
             (
                 SELECT image
-                FROM Productimage
+                FROM ProductImage
                 WHERE product_id = p.id
                 LIMIT 1
             ) AS image,
@@ -236,78 +237,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             LEFT JOIN Reviews r ON p.id = r.product_id
             LEFT JOIN SpuToSku sts ON p.id = sts.spu_id
             LEFT JOIN ProductSkus ps ON sts.sku_id = ps.id";
-        }
-        // Xây dựng câu truy vấn SQL
-        else {
-            $sql = "SELECT
-            p.id,
-            (
-                SELECT image
-                FROM Productimage
-                WHERE product_id = p.id
-                LIMIT 1
-            ) AS image,
-            p.name,
-            p.description,
-            c.title AS category_name,
-            AVG(r.rate) AS average_rate,
-            COUNT(r.id) AS total_reviews,
-            MIN(ps.price) AS price
-
-        FROM
-            ProductSpus p
-            LEFT JOIN ProductCategory c ON p.category_id = c.id
-            LEFT JOIN Reviews r ON p.id = r.product_id
-            LEFT JOIN SpuToSku sts ON p.id = sts.spu_id
-            LEFT JOIN ProductSkus ps ON sts.sku_id = ps.id";
-        }
-
-        // Xây dựng mảng điều kiện filter
-
+    
+        // Filter conditions
         $filterConditions = [];
-        // if ($role == 0) {
-        //     $filterConditions[] = " p.is_active = 1 ";
-        // }
-
+    
         if (!empty($categories)) {
             $categoryCondition = "c.id IN ('" . implode("','", $categories) . "')";
             $filterConditions[] = $categoryCondition;
         }
-
+    
         if (!empty($q)) {
-            $categoryCondition = "p.name LIKE '%$q%' ";
-            $filterConditions[] = $categoryCondition;
+            $searchCondition = "p.name LIKE '%$q%'";
+            $filterConditions[] = $searchCondition;
         }
-        
+    
         if (!empty($priceFrom)) {
             $priceFromCondition = "ps.price >= " . $priceFrom;
             $filterConditions[] = $priceFromCondition;
         }
-
+    
         if (!empty($priceTo)) {
             $priceToCondition = "ps.price <= " . $priceTo;
             $filterConditions[] = $priceToCondition;
         }
-
-        if (!empty($rate)) {
-            // $rateValue = str_replace('rate-', '', $rate);
-            $rate = floor($rate);
-            $rateCondition = "AVG(r.rate) = " . $rate;
-            $filterConditions[] = $rateCondition;
-        }
-
-        // Thêm điều kiện filter vào câu truy vấn SQL
+    
+        // Apply filter conditions
         if (!empty($filterConditions)) {
             $sql .= " WHERE " . implode(" AND ", $filterConditions);
         }
-
-        $sql .= " GROUP BY
-                    p.id, p.name, p.description, c.title";
+    
+        $sql .= " GROUP BY p.id, p.name, p.description, c.title";
+    
         if (!empty($rate)) {
-            $sql .= " HAVING ROUND(AVG(r.rate), 0) = $rate";
-            // $filterConditions[] = $rateCondition;
+            // HAVING clause for aggregated conditions
+            $rateCondition = "HAVING ROUND(AVG(r.rate), 0) = " . floor($rate);
+            $sql .= " $rateCondition";
         }
-        // Thực hiện truy vấn và lấy kết quả
+    
+        // Execute query and fetch results
         $products = executeQuery($connection, $sql, [], true);
         echo json_encode($products);
     }
